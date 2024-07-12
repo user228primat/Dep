@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Save POST Responses",
+  "version": "1.0",
+  "permissions": [
+    "webRequest",
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
