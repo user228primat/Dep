@@ -23,21 +23,24 @@ chrome.webRequest.onCompleted.addListener(
           latest_contest_order: responseBody.latest_contest_order || null
         };
 
-        chrome.storage.local.get({postResponses: []}, function(result) {
-          let postResponses = result.postResponses;
+        // Проверяем, пуст ли массив "results"
+        if (filteredResponse.results.length > 0) {
+          chrome.storage.local.get({postResponses: []}, function(result) {
+            let postResponses = result.postResponses;
 
-          // Удаляем старые ответы с таким же значением "latest_contest_order"
-          postResponses = postResponses.filter(item => JSON.parse(item.response).latest_contest_order !== filteredResponse.latest_contest_order);
+            // Удаляем старые ответы с таким же значением "latest_contest_order"
+            postResponses = postResponses.filter(item => JSON.parse(item.response).latest_contest_order !== filteredResponse.latest_contest_order);
 
-          // Добавляем новый ответ
-          postResponses.push({
-            url: details.url,
-            response: JSON.stringify(filteredResponse) // Преобразуем объект в строку JSON
+            // Добавляем новый ответ
+            postResponses.push({
+              url: details.url,
+              response: JSON.stringify(filteredResponse) // Преобразуем объект в строку JSON
+            });
+
+            // Сохраняем обновленный массив ответов
+            chrome.storage.local.set({postResponses: postResponses});
           });
-
-          // Сохраняем обновленный массив ответов
-          chrome.storage.local.set({postResponses: postResponses});
-        });
+        }
       })
       .catch(error => console.error('Error fetching response body:', error));
     }
